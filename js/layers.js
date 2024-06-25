@@ -15,8 +15,9 @@ addLayer("a",{
                 return hasAchievement(this.layer, this.id) ? "" : {
                   backgroundImage: ""
                 }
+
               },
-            image: "https://ychef.files.bbci.co.uk/976x549/p018j4ty.jpg"
+            image: "Media/ach1_Img.png"
         },
         12:{
             name: "Breaking the timewall",
@@ -55,6 +56,7 @@ addLayer("a",{
             style() {
                 return hasAchievement(this.layer, this.id) ? "" : {
                   backgroundImage: ""
+                  
                 }
               },
             image: "https://th.bing.com/th/id/OIP.JwrL266NzPtHWrCn4dxmAwHaIN?w=179&h=199&c=7&r=0&o=5&pid=1.7"
@@ -101,7 +103,15 @@ addLayer("a",{
 
 addLayer("cr",{
     name: "creation",
-    symbol: "CR",
+    symbol() {
+        return `
+        <p>CR
+        <style>
+        #cr{
+            background: linear-gradient(315deg, rgba(194,180,40,1) 0%, rgba(158,110,30,1) 63%, rgba(183,255,0,1) 100%);
+            border-radius:3px;
+        }</style>`
+      },
     position: 0,
     startData() {return{
         unlocked: true,
@@ -306,6 +316,116 @@ addLayer("cr",{
                 return status
             },
         }
+    },
+
+})
+
+addLayer("ap",{
+    name: "atomic power",
+    symbol() {
+        return `
+        <p>AP
+        <style>
+        #ap{
+             background: linear-gradient(311deg, rgba(90,158,30,1) 0%, rgba(121,9,9,1) 63%, rgba(0,212,255,1) 100%);
+            border-radius:3px;
+            color:white;
+        }</style>`
+      },
+    position: 2,
+    row: 0,
+    startData() {return{
+        unlocked: true,
+        points: new Decimal(0),
+        total:new Decimal(0),
+        best: new Decimal(0),
+    }},
+    color: "red",
+    resource: "atomic power",
+    baseResource: "atoms",
+    baseAmount() {return player.points},
+    type: "static",
+    exponent: 1,
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+	
+        return mult
+    },
+
+    tabFormat: {
+     "Point Boost Upgrades": {
+        content:[
+            ["display-text",
+            function() {return `<h2 style=color:red;><b>You have ` + format(player.ap.points) + ` Atomic Power.</b>`},],
+            ["display-text",
+            function() {return `<h2 style=color:red;font-size:18px><b>You have ` + format(player.ap.total) + ` total Atomic Power.</b>`},],
+            "blank",
+            ["display-text",
+            function() {return `<h3 style=color:red>You are generating ` + format(tmp.ap.generationQuantity) + `/s Atomic Power.`},],
+            ]},
+    "Feature Upgrades" : {
+        content:[
+            ["display-text",
+            function() {return `<h2 style=color:#FFD700;><b>This is for testing purposes.<br>Nothing yet to see here :)</b>`},],
+            ["upgrade", "11", "12"],
+        ],
+        
+    }},
+
+    update(diff) {
+        if (hasUpgrade("cr", "11")) player.cr.points = player.cr.points.add(tmp.cr.generationQuantity.times(diff));
+        if (hasUpgrade("cr", "11")) player.cr.total = player.cr.total.add(tmp.cr.generationQuantity.times(diff));
+    },
+    effect(){
+        let effect = 1
+        
+        return effect
+    },
+    layerShown(){
+        let show = false
+        if (hasUpgrade("cr", "14")) show = true
+        return show
+    },
+    generationQuantity(){
+        let generation = new Decimal(0)
+        return generation
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        return new Decimal(1)
+    },
+    row: 0,
+    hotkeys: [
+        {key: "a", description: "a: Reset for creator points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    layerShown(){return true},
+    doReset(resettingLayer) {
+        let keep = [];
+        if (resettingLayer) keep.push("upgrades")
+        if (resttingLayer) layerDataReset("h", keep)
+    },
+    infoboxes: {
+        lore1: {
+            title: "Lore",
+            unlocked(){
+                return hasUpgrade("cr", "14")
+             },
+            body() { return `In the beginning, all was simple - there were 4 elements: Earth,
+            Fire, Water, and Air. All was in peace and harmony... until the fire nation attacked.
+            Anyways, in the beginning, there was creation. I do
+            not care what you believe in, or what religion you are, but all of
+            them have a starting point of the world being created. In this case,
+            The Big Bang will be what we will refer to since most people accept
+            that as a possible source of creation. The Big Bang was said to have happened around
+             13.8 billion years ago. Good Luck! Have fun with the time walls!`},
+       },
+    },
+    upgrades: {
+        11: {
+            title: "Placeholder",
+            description: "Generate atomic power.",
+            cost: new Decimal(0),
+        },
+        
     },
 
 })
