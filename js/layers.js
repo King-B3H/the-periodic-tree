@@ -215,9 +215,9 @@ addLayer("cr",{
     generationQuantity(){
         let generation = new Decimal(0)
         if(hasUpgrade("cr", 11)) generation = new Decimal(0.5)
-        if(hasUpgrade("cr", 12)) generation = new Decimal(1)
-        if(hasUpgrade("cr", 13)) generation = new Decimal(5)
-        if(hasUpgrade("cr", 14)) generation = new Decimal(15)
+        if(hasUpgrade("cr", 12)) generation = generation.add(1)
+        if(hasUpgrade("cr", 13)) generation = generation.add(5)
+        if(hasUpgrade("cr", 14)) generation = generation.add(15)
         if(hasUpgrade("he", 13)) generation = generation.times(tmp.he.effect.times(2))
         if(hasUpgrade("cr", 21)) generation = generation.times(upgradeEffect("cr", 21))
 
@@ -260,17 +260,17 @@ addLayer("cr",{
         },
         12: {
             title: "Get Timewalled",
-            description: "This will take a while. Increase Creation point generation to 1 per second.",
+            description: "This will take a while. Increase Creation point generation by 1 per second.",
             cost: new Decimal(50)
         },
         13: {
             title: "This Is Meant To Be Slow",
-            description: "You might grow a year older while waiting for this upgrade! Increase Creation point generation to 5 a second.",
+            description: "You might grow a year older while waiting for this upgrade! Increase Creation point generation by 5 a second.",
             cost: new Decimal(200)
         },
         14: {
             title: "Beginnings",
-            description: `Unlocks a new layer<br>Base Creation point generation equals 15`,
+            description: `Unlocks a new layer<br>Base Creation point generation increases by 15`,
             cost: new Decimal(1500),
             unlocked(){
                 let status = false
@@ -318,13 +318,13 @@ addLayer("cr",{
 
 })
 
-addLayer("ap",{
+addLayer("ae",{
     name: "atomic power",
     symbol() {
         return `
-        <p>AP
+        <p>AE
         <style>
-        #ap{
+        #ae{
              background: linear-gradient(311deg, rgba(90,158,30,1) 0%, rgba(121,9,9,1) 63%, rgba(0,212,255,1) 100%);
             border-radius:3px;
             color:white;
@@ -354,18 +354,22 @@ addLayer("ap",{
      "Atomic Bonuses": {
         content:[
             ["display-text",
-            function() {return `<h2 style=color:red;><b>You have ` + format(player.ap.points) + ` Atomic Power.</b>`},],
+            function() {return `<h2 style=color:red;><b>You have ` + format(player.ae.points) + ` Atomic Power.</b>`},],
             ["display-text",
-            function() {return `<h2 style=color:red;font-size:18px><b>You have ` + format(player.ap.total) + ` total Atomic Power.</b>`},],
+            function() {return `<h2 style=color:red;font-size:18px><b>You have ` + format(player.ae.total) + ` total Atomic Power.</b>`},],
             "blank",
             ["display-text",
-            function() {return `<h3 style=color:red>You are generating ` + format(tmp.ap.generationQuantity) + `/s Atomic Power.`},],
-            ]},
+            function() {return `<h3 style=color:red>You are generating ` + format(tmp.ae.generationQuantity) + `/s Atomic Power.`},],
+            "blank",
+            "blank",
+            "blank",
+            ["display-text",
+                function() {return `<h3 style=color:red>Atomic Essence base gain is calculated by the base formula <br><br><b><h2 style=color:red>(2*P)+(1*E)+(1*N)</b></h1><br><br> P is protons, E is Electrons, N is neutrons.<br> This is calculated by the elements you have unlocked<br> A tab under achievements holds more info`},],
+                
+        ]},
     "Atomic Milestones" : {
         content:[
-            ["display-text",
-            function() {return `<h2 style=color:#FFD700;><b>This is for testing purposes.<br>Nothing yet to see here :)</b>`},],
-            ["upgrade", "11", "12"],
+            "milestones"
         ],
         
     }},
@@ -400,6 +404,23 @@ addLayer("ap",{
         let keep = [];
         if (resettingLayer) keep.push("upgrades")
         if (resttingLayer) layerDataReset("h", keep)
+    },
+    milestones: {
+        0: {
+            requirementDescription: "1000 Atomic Essence",
+            done() { return player.ae.best.gte(1000)},
+            effectDescription: "Unlock the creation point boost.",
+        },
+        1: {
+            requirementDescription: "1B Atomic Essence",
+            done() { return player.ae.best.gte(1e9)},
+            effectDescription: "Change the creation point formula slightly.",
+        },
+        2: {
+            requirementDescription: "1q Atomic Essence",
+            done() {return player.ae.best.gte(20)},
+            effectDescription: "Unlock the hydrogen boost."
+        }
     },
     infoboxes: {
         lore1: {
@@ -847,17 +868,6 @@ addLayer("l", {
 
             unlocked(){return hasMilestone("l", 11)}
         },
-        23: {
-            title: "We love global freezing!",
-            description: "freeze the entire earth for the cheap price of your sanity",
-            cost: new Decimal(9999999),
-
-            unlocked(){return player.l.points.gt(50)}
-        },
-        31: {
-            title: "",
-            description: "Helium boosts Lithium gain"
-        }
         },
     })
 
