@@ -124,8 +124,8 @@ addLayer("i",{
         },
         2: {
             requirementDescription: "1q Atomic Essence",
-            done() {return player.be.unlocked},
-            unlocked(){return player.be.unlocked},
+            done() {return player.l.unlocked},
+            unlocked(){return player.l.unlocked},
             effectDescription: "+3 Protons, +3 Electrons,  +4 Neutrons"
         }
     },    
@@ -243,7 +243,7 @@ addLayer("cr",{
 
     generationQuantity(){
         let generation = new Decimal(0)
-        if(hasUpgrade("cr", 11)) generation = new Decimal(0.5)
+        if(hasUpgrade("cr", 11)) generation = new Decimal(500)
         if(hasUpgrade("cr", 12)) generation = generation.add(1)
         if(hasUpgrade("cr", 13)) generation = generation.add(5)
         if(hasUpgrade("cr", 14)) generation = generation.add(15)
@@ -775,8 +775,8 @@ addLayer("l", {
     color: "green",
     requires(){
         let exponent = player.l.points.times(0.05).add(1.1)
-        let cost = new Decimal(1000000000)
-        if(player.l.unlocked) cost = new Decimal(1000000000).pow(exponent)
+        let cost = new Decimal(1e33)
+        if(player.l.unlocked) cost = new Decimal(1e33).pow(exponent)
         return cost
         },
     resource: "lithium",
