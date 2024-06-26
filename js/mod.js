@@ -44,7 +44,7 @@ function getPointGen() {
 
 		let gain = new Decimal(0)
 		//Hydrogen Upgrades
-		if(hasUpgrade('h', 11)) gain = new Decimal(1000000)
+		if(hasUpgrade('h', 11)) gain = new Decimal(1)
 		if(hasUpgrade('h', 12)) gain = gain.times(2)
 		if(hasUpgrade('h', 13)) gain = gain.times(upgradeEffect('h',13))
 		if(hasUpgrade('h', 21)) gain = gain.times(upgradeEffect('h',21))

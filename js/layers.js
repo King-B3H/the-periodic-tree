@@ -177,7 +177,7 @@ addLayer("cr",{
             ["display-text",
             function() {return `<h3 style=color:#FFD700>You are generating ` + format(tmp.cr.generationQuantity) + `/s Creation points.`},],
             ["display-text",
-            function() {return `<h3 style=color:#FFD700>Currencies are raised to the ` + format(tmp.cr.effect) + ` power*<br><p style="font-size:15px">(This is due to total Creation points)`},],
+            function() {return `<h3 style=color:#FFD700>Creation Point Gain is raised to the ` + format(tmp.cr.effect) + ` power<br><p style="font-size:15px">(This is due to total Creation points)`},],
             "blank",
             ["upgrades", "1"],
             ["upgrades", "2"],
@@ -189,8 +189,6 @@ addLayer("cr",{
             "blank",
             ["display-text",
             function() {return '<h3><b> Note: Creation Upgrades are meant to be slow. <b></h3>'}],
-            ["display-text",
-            function() {return '<h3><b> * = A list can be found here --> <b><a href="the-periodic-tree-master/js/currency-list.html" target="_blank" style=color:white;>Currency List</a></h3>'}]
             ]},
     "Feature Upgrades" : {
         content:[
@@ -209,14 +207,14 @@ addLayer("cr",{
         if (hasUpgrade("cr", "11")) player.cr.total = player.cr.total.add(tmp.cr.generationQuantity.times(diff));
     },
     effect(){
-        let effect = player.cr.total.root(4).log10().div(10).add(1)
+        let effect = player.cr.total.root(3).log10().div(35).add(1)
         if(effect.gte(2)) effect = 2
         return effect
     },
 
     generationQuantity(){
         let generation = new Decimal(0)
-        if(hasUpgrade("cr", 11)) generation = new Decimal(500)
+        if(hasUpgrade("cr", 11)) generation = new Decimal(0.5)
         if(hasUpgrade("cr", 12)) generation = new Decimal(1)
         if(hasUpgrade("cr", 13)) generation = new Decimal(5)
         if(hasUpgrade("cr", 14)) generation = new Decimal(15)
@@ -353,7 +351,7 @@ addLayer("ap",{
     },
 
     tabFormat: {
-     "Point Boost Upgrades": {
+     "Atomic Bonuses": {
         content:[
             ["display-text",
             function() {return `<h2 style=color:red;><b>You have ` + format(player.ap.points) + ` Atomic Power.</b>`},],
@@ -363,7 +361,7 @@ addLayer("ap",{
             ["display-text",
             function() {return `<h3 style=color:red>You are generating ` + format(tmp.ap.generationQuantity) + `/s Atomic Power.`},],
             ]},
-    "Feature Upgrades" : {
+    "Atomic Milestones" : {
         content:[
             ["display-text",
             function() {return `<h2 style=color:#FFD700;><b>This is for testing purposes.<br>Nothing yet to see here :)</b>`},],
@@ -467,7 +465,7 @@ addLayer("h", {
         if(hasUpgrade('he', 11)) multiplier = multiplier.times(3);
         if(hasUpgrade('he', 22)) multiplier = multiplier.times(upgradeEffect('he', 22))
         if(hasUpgrade('l', 11)) multiplier = multiplier.times(upgradeEffect('l', 11));
-        return multiplier = multiplier.pow(tmp.cr.effect)
+        return multiplier
     },
     hotkeys: [
         {key: "h", description: "H: Reset for hydrogen atoms", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
