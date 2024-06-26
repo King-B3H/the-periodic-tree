@@ -101,6 +101,35 @@ addLayer("a",{
     }
 })
 
+addLayer("i",{
+    startData() {return {unlocked: true,}},
+    color: "#LA6A03",
+    row:"side",
+    layerShown() {return true},
+    tooltip() {return ("Element Info!")},
+    milestonePopups: false,
+    
+    milestones: {
+        0: {
+            requirementDescription: "Hydrogen",
+            done() {return player.h.unlocked},
+            unlocked(){return player.h.unlocked},
+            effectDescription: "+1 Proton, +1 Electron,  +0 Neutron",
+        },
+        1: {
+            requirementDescription: "Helium",
+            done() { return player.he.unlocked},
+            unlocked(){return player.he.unlocked},
+            effectDescription: "+2 Protons, +2 Electrons,  +2 Neutrons",
+        },
+        2: {
+            requirementDescription: "1q Atomic Essence",
+            done() {return player.be.unlocked},
+            unlocked(){return player.be.unlocked},
+            effectDescription: "+3 Protons, +3 Electrons,  +4 Neutrons"
+        }
+    },    
+})
 addLayer("cr",{
     name: "creation",
     symbol() {
@@ -280,7 +309,7 @@ addLayer("cr",{
         },
         21: {
             title: "Gaining Traction",
-            description: "Creation Point Generation is boosted exponentially by your total Creation points.",
+            description: "Creation Point Generation is boosted by your total Creation points.",
             cost: new Decimal(10000),
             unlocked(){
                 return hasAchievement("a", 13)
@@ -364,7 +393,7 @@ addLayer("ae",{
             "blank",
             "blank",
             ["display-text",
-                function() {return `<h3 style=color:red>Atomic Essence base gain is calculated by the base formula <br><br><b><h2 style=color:red>(2*P)+(1*E)+(1*N)</b></h1><br><br> P is protons, E is Electrons, N is neutrons.<br> This is calculated by the elements you have unlocked<br> A tab under achievements holds more info`},],
+                function() {return `<h3 style=color:red>Atomic Essence base gain is calculated by the base formula <br><br><b><h2 style=color:red>(2*P)*(1*E)*(1*N)</b></h1><br><br> P is protons, E is Electrons, N is neutrons.<br> This is calculated by the elements you have unlocked<br> A tab under achievements holds more info`},],
                 
         ]},
     "Atomic Milestones" : {
