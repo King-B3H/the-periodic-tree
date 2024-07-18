@@ -249,6 +249,7 @@ addLayer("cr",{
         if(hasUpgrade("cr", 14)) generation = generation.add(15)
         if(hasUpgrade("he", 13)) generation = generation.times(tmp.he.effect.times(2))
         if(hasUpgrade("cr", 21)) generation = generation.times(upgradeEffect("cr", 21))
+        if(hasMilestone("ae", 1)) generation = generation.times(tmp.ae.creationEffect)
 
         return !hasUpgrade("cr", 13) ? generation : generation.pow(tmp.cr.effect)
     },
@@ -383,17 +384,24 @@ addLayer("ae",{
      "Atomic Bonuses": {
         content:[
             ["display-text",
-            function() {return `<h2 style=color:red;><b>You have ` + format(player.ae.points) + ` Atomic Power.</b>`},],
+            function() {return `<h2 style=color:red;><b>You have ` + format(player.ae.points) + ` Atomic Essence.</b>`},],
             ["display-text",
-            function() {return `<h2 style=color:red;font-size:18px><b>You have ` + format(player.ae.total) + ` total Atomic Power.</b>`},],
-            "blank",
-            ["display-text",
-            function() {return `<h3 style=color:red>You are generating ` + format(tmp.ae.generationQuantity) + `/s Atomic Power.`},],
-            "blank",
-            "blank",
+            function() {return `<h2 style=color:red;font-size:18px><b>You have ` + format(player.ae.total) + ` total Atomic Essence.</b>`},],
             "blank",
             ["display-text",
-                function() {return `<h3 style=color:red>Atomic Essence base gain is calculated by the base formula <br><br><b><h2 style=color:red>(2*P)*(1*E)*(1*N)</b></h1><br><br> P is protons, E is Electrons, N is neutrons.<br> This is calculated by the elements you have unlocked<br> A tab under achievements holds more info`},],
+            function() {return `<h3 style=color:red>You are generating ` + format(tmp.ae.generationQuantity) + `/s Atomic Essence.`},],
+            "blank",
+            ["display-text",
+            function() {if (hasMilestone("ae", "0")){return `<h3 style=color:red>Atomic Milestone 1 is currently boosting Atomic Essence by ` + format(tmp.ae.effect) + `x.`}},],
+            "blank",
+            ["display-text",
+            function() {if (hasMilestone("ae", "1")){return `<h3 style=color:red>Atomic Milestone 2 is currently boosting Creation Points by ` + format(tmp.ae.creationEffect) + `x.`}},],
+            "blank",
+            "blank",
+            "blank",
+            "blank",
+            ["display-text",
+                function() {return `<h3 style=color:red>Atomic Essence base gain is calculated by the base formula <br><br><b><h2 style=color:red>(2*P)*(1*N)*(1*E)</b></h1><br><br> P is protons, N is neutrons, E is Electrons.<br> This is calculated by the elements you have unlocked<br> A tab under achievements holds more info`},],
                 
         ]},
     "Atomic Milestones" : {
@@ -404,22 +412,36 @@ addLayer("ae",{
     }},
 
     update(diff) {
-        if (hasUpgrade("cr", "11")) player.cr.points = player.cr.points.add(tmp.cr.generationQuantity.times(diff));
-        if (hasUpgrade("cr", "11")) player.cr.total = player.cr.total.add(tmp.cr.generationQuantity.times(diff));
+        if (player.ae.unlocked) player.ae.points = player.ae.points.add(tmp.ae.generationQuantity.times(diff));
+        if (player.ae.unlocked) player.ae.total = player.ae.total.add(tmp.ae.generationQuantity.times(diff));
     },
     effect(){
         let effect = 1
-        
+        if(hasMilestone("ae", "0")) effect = player.ae.total.add(1).pow(0.55).log10()
+        return effect
+    },
+    creationEffect(){
+        let effect = 1
+        if(hasMilestone("ae", "1")) effect = player.ae.total.add(1).pow(0.9).log10()
         return effect
     },
     layerShown(){
         let show = false
-        if (hasUpgrade("cr", "14")) show = true
+        if (player.h.unlocked) show = true
         return show
     },
     generationQuantity(){
         let generation = new Decimal(0)
-        return generation
+        if(player.h.unlocked){
+            generation = new Decimal(2)
+        }
+        if(player.he.unlocked){
+            generation = new Decimal(7)
+        }
+        if(player.l.unlocked){
+            generation = new Decimal(18)
+        }
+        return generation.times(tmp.ae.effect)
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         return new Decimal(1)
@@ -428,7 +450,6 @@ addLayer("ae",{
     hotkeys: [
         {key: "a", description: "a: Reset for creator points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
-    layerShown(){return true},
     doReset(resettingLayer) {
         let keep = [];
         if (resettingLayer) keep.push("upgrades")
@@ -436,41 +457,42 @@ addLayer("ae",{
     },
     milestones: {
         0: {
-            requirementDescription: "1000 Atomic Essence",
-            done() { return player.ae.best.gte(1000)},
-            effectDescription: "Unlock the creation point boost.",
+            requirementDescription: "500 Atomic Essence",
+            done() { return player.ae.points.gte(500)},
+            effectDescription: "Unlock the atomic essence boost.",
         },
         1: {
-            requirementDescription: "1B Atomic Essence",
-            done() { return player.ae.best.gte(1e9)},
-            effectDescription: "Change the creation point formula slightly.",
+            requirementDescription: "100K Atomic Essence",
+            done() { return player.ae.points.gte(1e5)},
+            unlocked() {hasMilestone("ae", 0)},
+            effectDescription: "Unlock the creation point boost.",
         },
         2: {
-            requirementDescription: "1q Atomic Essence",
-            done() {return player.ae.best.gte(20)},
-            effectDescription: "Unlock the hydrogen boost."
+            requirementDescription: "50M Atomic Essence",
+            done() {return player.ae.points.gte(5e8)},
+            unlocked() {hasMilestone("ae", 1)},
+            effectDescription: "Unlock the hydrogen boost.",
+        },
+        3: {
+            requirementDescription: "1B Atomic Essence",
+            done() {return player.ae.points.gte(1e9)},
+            unlocked() {hasMilestone("ae", 2)},
+            effectDescription: "Change the atomic Essence Formula to be exponential instead of multiplicative. (wow what a boost)",
         }
     },
     infoboxes: {
         lore1: {
             title: "Lore",
             unlocked(){
-                return hasUpgrade("cr", "14")
+                return true
              },
-            body() { return `In the beginning, all was simple - there were 4 elements: Earth,
-            Fire, Water, and Air. All was in peace and harmony... until the fire nation attacked.
-            Anyways, in the beginning, there was creation. I do
-            not care what you believe in, or what religion you are, but all of
-            them have a starting point of the world being created. In this case,
-            The Big Bang will be what we will refer to since most people accept
-            that as a possible source of creation. The Big Bang was said to have happened around
-             13.8 billion years ago. Good Luck! Have fun with the time walls!`},
+            body() { return `Placeholder Text`},
        },
     },
     upgrades: {
         11: {
             title: "Placeholder",
-            description: "Generate atomic power.",
+            description: "Generate atomic essence.",
             cost: new Decimal(0),
         },
         
