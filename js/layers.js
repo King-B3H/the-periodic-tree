@@ -73,7 +73,7 @@ addLayer("a",{
               },
             image: "https://th.bing.com/th/id/OIP.JA8mkwas7jiV-oYo3YuTLAHaE8?w=256&h=180&c=7&r=0&o=5&pid=1.7"
         },
-    	16:{
+    	21:{
             name: "Ayush Goober",
             tooltip: "Did you really think you'd get a special leak? JK you might later if I feel like it.",
             done() {return player.ae.total.gt(0)},
