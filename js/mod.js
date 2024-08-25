@@ -19,7 +19,7 @@ let VERSION = {
 
 let changelog = `<h1>Changelog:</h1><br>
 	<h3>v0.1</h3><br>
-		- Added Creation, Hydrogen, Helium, and Lithium.<br>
+		- Added Creation, Atomic Essence, Hydrogen, Helium, and Lithium.<br>
 		- Beryllium is meant for WIP and a setup for next update.`
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
@@ -43,8 +43,10 @@ function getPointGen() {
 		return new Decimal(0)
 
 		let gain = new Decimal(0)
+		//Atomic Essence
+		if(hasMilestone("ae", 2))gain = gain.times(tmp.ae.atomEffect)
 		//Hydrogen Upgrades
-		if(hasUpgrade('h', 11)) gain = new Decimal(1)
+		if(hasUpgrade('h', 11)) gain = new Decimal(10000)
 		if(hasUpgrade('h', 12)) gain = gain.times(2)
 		if(hasUpgrade('h', 13)) gain = gain.times(upgradeEffect('h',13))
 		if(hasUpgrade('h', 21)) gain = gain.times(upgradeEffect('h',21))
@@ -71,7 +73,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e280000000"))
+	return player.points.gte(new Decimal("e1e1009090909090"))
 }
 
 

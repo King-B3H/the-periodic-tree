@@ -73,17 +73,6 @@ addLayer("a",{
               },
             image: "https://th.bing.com/th/id/OIP.JA8mkwas7jiV-oYo3YuTLAHaE8?w=256&h=180&c=7&r=0&o=5&pid=1.7"
         },
-    	21:{
-            name: "Ayush Goober",
-            tooltip: "Did you really think you'd get a special leak? JK you might later if I feel like it.",
-            done() {return player.ae.total.gt(0)},
-            style() {
-                return hasAchievement(this.layer, this.id) ? "" : {
-                  backgroundImage: ""
-                }
-              },
-            image: "https://yt3.googleusercontent.com/ytc/AIdro_kmghLlv5IHLb877SNR_PqEJgGLtGFTILx9PKwbWA4m0w=s160-c-k-c0x00ffffff-no-rj"
-        },
         /*
         15:{
             name: "Both",
@@ -380,7 +369,7 @@ addLayer("ae",{
         best: new Decimal(0),
     }},
     color: "red",
-    resource: "atomic power",
+    resource: "atomic essence",
     baseResource: "atoms",
     baseAmount() {return player.points},
     type: "static",
@@ -407,6 +396,9 @@ addLayer("ae",{
             "blank",
             ["display-text",
             function() {if (hasMilestone("ae", "1")){return `<h3 style=color:red>Atomic Milestone 2 is currently boosting Creation Points by ` + format(tmp.ae.creationEffect) + `x.`}},],
+            "blank",
+            ["display-text",
+            function() {if (hasMilestone("ae", "2")){return `<h3 style=color:red>Atomic Milestone 3 is currently boosting Atoms by ` + format(tmp.ae.atomEffect) + `x.`}},],
             "blank",
             "blank",
             "blank",
@@ -435,6 +427,12 @@ addLayer("ae",{
         let effect = 1
         if(hasMilestone("ae", "1")) effect = player.ae.total.add(1).pow(0.9).log10()
         return effect
+    },
+    atomEffect(){
+        let effect = 1
+        let formula = (player.ae.total.pow(0.7).add(1).div(100)).pow(0.55).div(player.ae.total.log10()).log10()
+        effect = formula
+             return effect
     },
     layerShown(){
         let show = false
@@ -474,20 +472,20 @@ addLayer("ae",{
         },
         1: {
             requirementDescription: "100K Atomic Essence",
+            unlocked(){return hasMilestone("ae", 0)},
             done() { return player.ae.points.gte(1e5)},
-            unlocked() {hasMilestone("ae", 0)},
             effectDescription: "Unlock the creation point boost.",
         },
         2: {
             requirementDescription: "50M Atomic Essence",
-            done() {return player.ae.points.gte(5e8)},
-            unlocked() {hasMilestone("ae", 1)},
-            effectDescription: "Unlock the hydrogen boost.",
+            done() {return player.ae.points.gte(5e7)},
+            unlocked(){return hasMilestone("ae", 1)},
+            effectDescription: "Unlock the atom boost.",
         },
         3: {
             requirementDescription: "1B Atomic Essence",
             done() {return player.ae.points.gte(1e9)},
-            unlocked() {hasMilestone("ae", 2)},
+            unlocked(){return hasMilestone("ae", 2)},
             effectDescription: "Change the atomic Essence Formula to be exponential instead of multiplicative. (wow what a boost)",
         }
     },
@@ -533,7 +531,7 @@ addLayer("h", {
     baseResource: "atoms", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 0.75, // Prestige currency exponent
+    exponent: 0.85, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses. Edit by King_B3H: Can reduce the cost or increase cost
         let mult = new Decimal(1);
         return mult
@@ -559,9 +557,9 @@ addLayer("h", {
         return show
     },
     doReset(resettingLayer) {
-        let keep = [];
-        if (hasMilestone("he", 0) && resettingLayer=="he") keep.push("upgrades")
-        if (hasMilestone("l", 0) && resettingLayer=="l") keep.push("upgrades")
+        let permGeneration = player[this.layer].upgrades
+        layerDataReset("h", keep)
+        let keep = [permGeneration];
         if (layers[resettingLayer].row > this.row) layerDataReset("h", keep)
 
         if (layers[resettingLayer].row > this.row) player.points = new Decimal(10)
@@ -611,7 +609,7 @@ addLayer("h", {
             cost: new Decimal(10),
             effect() {
               let effect = new Decimal(1)
-              if(hasUpgrade("h", 13)) effect = effect.add(player.h.total.log(10).pow(0.15))
+              if(hasUpgrade("h", 13)) effect = effect.add(player.h.total.log(10).pow(0.85))
                 if (hasUpgrade('h', 31)) effect = effect.pow(1.75)
                 if (hasUpgrade('he', 12)) effect = effect.times(1.4)
                 return effect;
@@ -624,7 +622,7 @@ addLayer("h", {
             description: "Atoms boost hydrogen",
             cost: new Decimal(25),
             effect() {
-                let effect = new Decimal(1).add(player.points.add(1).log10().pow(0.5).div(5))
+                let effect = new Decimal(1).add(player.points.add(1).log10().pow(0.75).div(3))
                 return effect
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + 'x' },
@@ -694,9 +692,8 @@ startData() {return{
 
     color: "#0BE0CE",
     requires(){
-        let exponent = player.he.points.times(2).add(2.00)
-        if(player.he.points.gte(10)) exponent = player.he.points.times(0.01).add(1.80)
-        return !player.he.points.gte(10) ? new Decimal(600).times(exponent) : new Decimal(500).pow(exponent)
+
+        return (new Decimal(1000).add(new Decimal(100).times(player.he.total))).times(new Decimal(10).pow(player.he.points))
         },
     resource: "helium",
     baseResource: "atoms",
