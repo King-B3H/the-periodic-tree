@@ -21,14 +21,11 @@ addLayer("a",{
         },
         12:{
             name: "Breaking the timewall",
-            tooltip: "omg you actually get content now. Reward: 10 Atoms",
+            tooltip: "omg you actually get content now. Reward: Start Generating Atoms",
             unlocked() {return hasAchievement("a", 11)},
             done(){return hasUpgrade("cr", 14)},
 
             image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7LQ4UafFMiXSIYGPkIt2E7bIPGSPaf8n39gg3hEJdxQ&s",
-            onComplete(){
-                player.points = new Decimal(10)
-            },
           style() {
             return hasAchievement(this.layer, this.id) ? "" : {
                 backgroundImage: ""
@@ -46,7 +43,7 @@ addLayer("a",{
                   backgroundImage: ""
                 }
               },
-            image: "https://th.bing.com/th/id/OIP.5iyUUKSTmL-taBas--_oMAAAAA?w=156&h=180&c=7&r=0&o=5&pid=1.7"
+            image: "Media/ach3_Img.png"
         },
         14:{
             name: "Wow, you're really still playing?",
@@ -59,7 +56,7 @@ addLayer("a",{
                   
                 }
               },
-            image: "https://th.bing.com/th/id/OIP.JwrL266NzPtHWrCn4dxmAwHaIN?w=179&h=199&c=7&r=0&o=5&pid=1.7"
+            image: "Media/ach4_Img.png"
         },
         15:{
             name: "Moving on",
@@ -420,12 +417,12 @@ addLayer("ae",{
     },
     effect(){
         let effect = 1
-        if(hasMilestone("ae", "0")) effect = player.ae.total.add(1).pow(0.55).log10()
+        if(hasMilestone("ae", "0")) effect = player.ae.total.add(1).pow(0.65).log10()
         return effect
     },
     creationEffect(){
         let effect = 1
-        if(hasMilestone("ae", "1")) effect = player.ae.total.add(1).pow(0.9).log10()
+        if(hasMilestone("ae", "1")) effect = player.ae.total.add(1).pow(0.95).log10()
         return effect
     },
     atomEffect(){
@@ -592,15 +589,15 @@ addLayer("h", {
     },
     upgrades: {
         11:{
-            title: "Atom Generator",
-            description: "Allows you to start generating atoms!",
+            title: "Stronger Hydrogen I",
+            description: "Double atom gain",
             cost: new Decimal(1)
            
         },
         12: {
-            title: "Stronger Hydrogen I",
-            description: "Doubles your atom gain.",
-            cost: new Decimal(1),
+            title: "Stronger Hydrogen II",
+            description: "Doubles your atom gain again.",
+            cost: new Decimal(3),
             unlocked() { return hasUpgrade("h", 11) },
         },
         13: {
@@ -629,8 +626,8 @@ addLayer("h", {
             unlocked() { return hasUpgrade("h", 13) },
         },
         22: {
-            title: "Stronger Hydrogen II",
-            description: "Doubles atom gain again.",
+            title: "Stronger Hydrogen III",
+            description: "Doubles atom gain yet again.",
             cost: new Decimal(100),
             unlocked() { return hasUpgrade("h", 21) },
         },

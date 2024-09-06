@@ -46,7 +46,8 @@ function getPointGen() {
 		//Atomic Essence
 		if(hasMilestone("ae", 2))gain = gain.times(tmp.ae.atomEffect)
 		//Hydrogen Upgrades
-		if(hasUpgrade('h', 11)) gain = new Decimal(10000)
+		if(hasAchievement('a', 12)) gain = new Decimal(1)
+		if(hasUpgrade('h', 11)) gain = gain.times(2)
 		if(hasUpgrade('h', 12)) gain = gain.times(2)
 		if(hasUpgrade('h', 13)) gain = gain.times(upgradeEffect('h',13))
 		if(hasUpgrade('h', 21)) gain = gain.times(upgradeEffect('h',21))
